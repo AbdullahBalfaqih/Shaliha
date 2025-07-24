@@ -259,52 +259,35 @@ export default function SignupPage() {
                                                 </DialogTrigger>
                                                 <DialogContent dir="rtl" className="max-w-3xl">
                                                     <DialogHeader className="text-right">
-                                                        <DialogTitle dir="rtl" className="text-right">شروط الخدمة</DialogTitle>
-                                                        <DialogClose
-                                                            className="absolute left-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100
-                   focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none
-                   data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
-                                                        >
+                                                        <DialogTitle>شروط الخدمة</DialogTitle>
+                                                        <DialogClose className="absolute left-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
                                                             <X className="h-4 w-4" />
                                                             <span className="sr-only">Close</span>
                                                         </DialogClose>
                                                     </DialogHeader>
-                                                    <ScrollArea
-                                                        className="h-[70vh] pr-6"  // بدّل padding-left (pl-6) إلى padding-right (pr-6)
-                                                        style={{ direction: 'rtl' }}  // تأكد من أن المحتوى داخل ScrollArea يتبع الاتجاه RTL
-                                                    >
+                                                    <ScrollArea className="h-[70vh] pl-6">
                                                         <TermsOfServicePage />
                                                     </ScrollArea>
                                                 </DialogContent>
                                             </Dialog>
-                                            {" "}
-                                            و{" "}
+                                            {" "}و{" "}
                                             <Dialog>
                                                 <DialogTrigger asChild>
                                                     <span className="underline hover:text-primary cursor-pointer">سياسة الخصوصية</span>
                                                 </DialogTrigger>
                                                 <DialogContent dir="rtl" className="max-w-3xl">
                                                     <DialogHeader className="text-right">
-                                                        <DialogTitle dir="rtl" className="text-right">سياسة الخصوصية</DialogTitle>
-
-                                                        <DialogClose
-                                                            className="absolute left-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100
-                   focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none
-                   data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
-                                                        >
+                                                        <DialogTitle>سياسة الخصوصية</DialogTitle>
+                                                        <DialogClose className="absolute left-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
                                                             <X className="h-4 w-4" />
                                                             <span className="sr-only">Close</span>
                                                         </DialogClose>
                                                     </DialogHeader>
-                                                    <ScrollArea
-                                                        className="h-[70vh] pr-6"  // نفس التعديل هنا
-                                                        style={{ direction: 'rtl' }}
-                                                    >
+                                                    <ScrollArea className="h-[70vh] pl-6">
                                                         <PrivacyPolicyPage />
                                                     </ScrollArea>
                                                 </DialogContent>
                                             </Dialog>
-
                                             .
                                         </label>
                                     </div>
@@ -357,6 +340,7 @@ export default function SignupPage() {
                     <div className="hidden lg:block relative h-full">
                         <Image
                             src="/images/2.png"
+                            data-ai-hint="luxury pool"
                             alt="مسبح فاخر"
                             width={600}
                             height={800}
@@ -368,3 +352,4 @@ export default function SignupPage() {
         </div>
     );
 }
+
