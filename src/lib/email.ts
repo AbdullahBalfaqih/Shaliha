@@ -1,5 +1,5 @@
-
 import nodemailer from 'nodemailer';
+import path from 'path'; // ✅ استيراد path
 
 interface OtpEmailPayload {
     to: string;
@@ -13,22 +13,23 @@ interface PasswordResetEmailPayload {
     password: string;
 }
 
-// You also need to add these variables to your .env file.
+// إعدادات SMTP من .env
 const port = parseInt(process.env.EMAIL_SERVER_PORT || '587', 10);
 const smtpConfig = {
   host: process.env.EMAIL_SERVER_HOST || 'smtp.gmail.com',
   port,
-  secure: port === 465, // ✅ هذا هو المهم
+  secure: port === 465,
   auth: {
     user: process.env.EMAIL_SERVER_USER,
     pass: process.env.EMAIL_SERVER_PASSWORD,
   },
 };
 
-
 const transporter = nodemailer.createTransport(smtpConfig);
-
 const emailEnabled = !!smtpConfig.auth.user && !!smtpConfig.auth.pass;
+
+// ✅ المسار المطلق للصورة من مجلد المشروع
+const imagePath = path.resolve(process.cwd(), 'public', 'images', '3.png');
 
 export async function sendVerificationEmail({ to, name, otp }: OtpEmailPayload) {
     const mailOptions = {
@@ -55,7 +56,7 @@ export async function sendVerificationEmail({ to, name, otp }: OtpEmailPayload) 
         attachments: [
             {
                 filename: '3.png',
-                path: './public/images/3.png', // تأكد أن المسار صحيح
+                path: imagePath, // ✅ استخدم المسار المطلق
                 cid: 'logo',
             },
         ],
@@ -104,8 +105,8 @@ export async function sendPasswordResetEmail({ to, name, password }: PasswordRes
         attachments: [
             {
                 filename: '3.png',
-                path: './public/images/3.png',  // تأكد من المسار الصحيح للصورة على سيرفرك
-                cid: 'logo'  // هذا هو المعرف الذي استخدمناه في src الصورة داخل html
+                path: imagePath, // ✅ نفس المسار المطلق
+                cid: 'logo'
             }
         ],
     };
@@ -125,4 +126,3 @@ export async function sendPasswordResetEmail({ to, name, password }: PasswordRes
         throw new Error('Could not send password reset email.');
     }
 }
-
