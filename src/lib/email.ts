@@ -13,17 +13,15 @@ interface PasswordResetEmailPayload {
     password: string;
 }
 
-// NOTE: For this to work, you need to set up an App Password for your Gmail account.
-// See: https://support.google.com/accounts/answer/185833
-// You also need to add these variables to your .env.local file.
+// You also need to add these variables to your .env file.
 const smtpConfig = {
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // use SSL
-    auth: {
-        user: process.env.EMAIL_SERVER_USER,
-        pass: process.env.EMAIL_SERVER_PASSWORD,
-    },
+  host: process.env.EMAIL_SERVER_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.EMAIL_SERVER_PORT || '587', 10),
+  secure: (process.env.EMAIL_SERVER_PORT || '587') === '465', // true for 465, false for other ports
+  auth: {
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD,
+  },
 };
 
 const transporter = nodemailer.createTransport(smtpConfig);

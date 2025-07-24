@@ -13,8 +13,8 @@ const contactFormSchema = z.object({
 
 const smtpConfig = {
   host: process.env.EMAIL_SERVER_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.EMAIL_SERVER_PORT || '465', 10),
-  secure: (process.env.EMAIL_SERVER_SECURE || 'true') === 'true',
+  port: parseInt(process.env.EMAIL_SERVER_PORT || '587', 10),
+  secure: (process.env.EMAIL_SERVER_PORT || '587') === '465', // true for 465, false for other ports
   auth: {
     user: process.env.EMAIL_SERVER_USER,
     pass: process.env.EMAIL_SERVER_PASSWORD,
@@ -42,11 +42,12 @@ export async function sendContactMessage(formData: FormData) {
 
   // Check if email credentials are set in .env
   if (!smtpConfig.auth.user || !smtpConfig.auth.pass || !process.env.EMAIL_TO) {
-    console.error('Email server credentials or recipient email are not set in .env file.');
+    console.error('Email server credentials or recipient email (EMAIL_TO) are not set in .env file.');
     // In a real production environment, you might want to return a more user-friendly error.
     // For this app, we will simulate success to avoid blocking the user if env is not set up.
     console.log("------- CONTACT FORM SIMULATION -------");
     console.log(`From: ${name} <${email}>`);
+    console.log(`To: ${process.env.EMAIL_TO}`);
     console.log("Subject:", subject);
     console.log("Message:", message);
     console.log("---------------------------------------");

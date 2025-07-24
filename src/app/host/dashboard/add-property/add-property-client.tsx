@@ -86,14 +86,15 @@ export function AddPropertyClientPage() {
     const [isFetchingData, setIsFetchingData] = useState(true);
 
      useEffect(() => {
-        if (authLoading) return;
-        if (!user || user.role !== 'host') {
-            router.push('/login');
-            toast({
-                title: 'غير مصرح به',
-                description: 'يجب أن تكون مضيفًا للوصول إلى هذه الصفحة.',
-                variant: 'destructive',
-            });
+         if (authLoading) return;
+
+         if (!user || (user.role !== 'host' && user.role !== 'admin')) {
+             router.push('/login');
+             toast({
+                 title: 'غير مصرح به',
+                 description: 'يجب أن تكون مضيفًا أو مسؤولاً للوصول إلى هذه الصفحة.',
+                 variant: 'destructive',
+             });
             return;
         }
         

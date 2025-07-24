@@ -11,15 +11,15 @@ import { Button } from "@/components/ui/button";
 import { Users, Home, DollarSign, Activity, Trash2, FileText, MessageCircle, Waves, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import type { Database } from '@/lib/supabase/database.types';
 import { getAllUsers, deleteUser, getSystemStats, getAllPropertiesForAdmin, getSystemReportData } from './actions';
@@ -51,16 +51,16 @@ export default function AdminDashboardPage() {
 
     const [users, setUsers] = useState<UserDetails[]>([]);
     const [properties, setProperties] = useState<PropertyAdmin[]>([]);
-    const [allBookings, setAllBookings] = useState<Booking[]>([]); 
+    const [allBookings, setAllBookings] = useState<Booking[]>([]);
     const [stats, setStats] = useState({
         totalUsers: 0,
         totalHosts: 0,
         totalCustomers: 0,
         totalProperties: 0,
-        totalRevenue: 0, 
+        totalRevenue: 0,
         activeBookings: 0,
     });
-    
+
     useEffect(() => {
         if (authLoading) return;
         if (!user || user.role !== 'admin') {
@@ -83,17 +83,17 @@ export default function AdminDashboardPage() {
                     getAllPropertiesForAdmin(),
                     getSystemStats()
                 ]);
-                
+
                 setUsers(usersData as UserDetails[]);
-                setProperties(propertiesData as PropertyAdmin[]); 
+                setProperties(propertiesData as PropertyAdmin[]);
                 setAllBookings((bookingsData as any) || []);
                 setStats({
-                  totalUsers: statsData.totalUsers,
-                  totalHosts: statsData.totalHosts,
-                  totalCustomers: statsData.totalCustomers,
-                  totalProperties: statsData.totalProperties,
-                  totalRevenue: statsData.totalRevenue,
-                  activeBookings: statsData.activeBookings,
+                    totalUsers: statsData.totalUsers,
+                    totalHosts: statsData.totalHosts,
+                    totalCustomers: statsData.totalCustomers,
+                    totalProperties: statsData.totalProperties,
+                    totalRevenue: statsData.totalRevenue,
+                    activeBookings: statsData.activeBookings,
                 });
 
             } catch (error) {
@@ -141,7 +141,7 @@ export default function AdminDashboardPage() {
         const hostBookings = allBookings.filter(b => b.host_id === hostUser.id);
         const serviceFeeDue = hostBookings.reduce((sum, b) => sum + b.service_fee, 0);
         const currency = hostBookings.length > 0 ? hostBookings[0].currency : 'YER';
-        
+
         const message = `مرحباً ${hostUser.full_name}, نود تذكيركم بأن لديكم رسوم خدمة مستحقة بقيمة ${serviceFeeDue.toLocaleString()} ${currency}. يرجى السداد في أقرب وقت ممكن. شكراً لتعاونكم، فريق شاليها.`;
         const whatsappUrl = `https://wa.me/${hostUser.phone}?text=${encodeURIComponent(message)}`;
         window.open(whatsappUrl, '_blank');
@@ -150,22 +150,26 @@ export default function AdminDashboardPage() {
             description: `تم فتح واتساب لإرسال رسالة تذكير إلى ${hostUser.full_name}.`,
         });
     };
-    
+
     const generateReportHTML = (title: string, content: string) => {
         return `
-            <html>
+            <!DOCTYPE html>
+            <html lang="ar" dir="rtl">
                 <head>
                     <title>${title}</title>
                     <meta charset="UTF-8">
+                    <link rel="preconnect" href="https://fonts.googleapis.com">
+                    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
                     <style>
-                        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
                         body { 
                             font-family: 'Tajawal', sans-serif; 
-                            direction: rtl;
                             margin: 0;
                             padding: 0;
                             background-color: #f4f4f4;
                             color: #333;
+                            -webkit-print-color-adjust: exact; 
+                            print-color-adjust: exact;
                         }
                         .page {
                             width: 210mm;
@@ -179,7 +183,7 @@ export default function AdminDashboardPage() {
                            display: flex;
                            justify-content: space-between;
                            align-items: center;
-                           border-bottom: 2px solid hsl(210, 100%, 50%);
+                           border-bottom: 2px solid #3b82f6;
                            padding-bottom: 10px;
                         }
                         .header .logo-container {
@@ -190,26 +194,31 @@ export default function AdminDashboardPage() {
                         .header .logo-container .logo-text {
                            font-size: 28px;
                            font-weight: bold;
-                           color: hsl(210, 100%, 50%);
+                           color: #3b82f6;
                         }
                         .header .logo-container .logo-icon {
                             width: 32px;
                             height: 32px;
-                            color: hsl(210, 100%, 50%);
+                            color: #3b82f6;
+                            fill: none;
+                            stroke: currentColor;
+                            stroke-width: 2;
+                            stroke-linecap: round;
+                            stroke-linejoin: round;
                         }
                         .header .report-title h1 {
-                           margin: 0; font-size: 22px;
+                           margin: 0; font-size: 22px; text-align: left;
                         }
                         .header .report-title p {
-                           margin: 0; font-size: 12px; color: #666;
+                           margin: 0; font-size: 12px; color: #666; text-align: left;
                         }
                         h2 {
                             font-size: 20px;
-                            border-bottom: 2px solid hsl(210, 100%, 50%);
+                            border-bottom: 2px solid #3b82f6;
                             padding-bottom: 8px;
                             margin-top: 25px;
                             margin-bottom: 15px;
-                            color: hsl(210, 100%, 50%);
+                            color: #3b82f6;
                         }
                         table {
                             width: 100%;
@@ -252,15 +261,9 @@ export default function AdminDashboardPage() {
                              margin: 0;
                              font-size: 20px;
                              font-weight: bold;
-                             color: hsl(210, 100%, 50%);
+                             color: #3b82f6;
                         }
                         @media print {
-                           html, body {
-                                width: 210mm;
-                                height: 297mm;
-                                -webkit-print-color-adjust: exact; 
-                                print-color-adjust: exact;
-                           }
                            .page {
                                 margin: 0;
                                 box-shadow: none;
@@ -274,7 +277,7 @@ export default function AdminDashboardPage() {
                     <div class="page">
                          <div class="header">
                             <div class="logo-container">
-                                <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>
+                                <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>
                                 <div class="logo-text">شاليها</div>
                             </div>
                             <div class="report-title">
@@ -284,16 +287,23 @@ export default function AdminDashboardPage() {
                         </div>
                         ${content}
                     </div>
-                    <script>
-                        window.onload = () => {
-                            setTimeout(() => window.print(), 500);
-                        }
-                    </script>
                 </body>
             </html>
         `;
     };
-    
+
+    const downloadReport = (htmlContent: string, filename: string) => {
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
     const handleGenerateHostReport = (hostUser: UserDetails) => {
         const hostProperties = properties.filter(p => p.host_id === hostUser.id);
         const hostBookings = allBookings.filter(b => b.host_id === hostUser.id);
@@ -323,9 +333,8 @@ export default function AdminDashboardPage() {
             </table>
         `;
         const reportHtml = generateReportHTML(`تقرير المضيف: ${hostUser.full_name}`, reportContent);
-        const reportWindow = window.open('', '_blank');
-        reportWindow?.document.write(reportHtml);
-        reportWindow?.document.close();
+        downloadReport(reportHtml, `host-report-${hostUser.id}.html`);
+        toast({ title: "تم إنشاء تقرير المضيف", description: "بدأ تنزيل الملف." });
     };
 
     const handleGenerateSystemReport = async () => {
@@ -363,10 +372,10 @@ export default function AdminDashboardPage() {
         const bookingsHtml = (bookings || []).map((b: Booking) => `
             <tr>
                 <td>${b.id}</td>
-                <td>${(b as any).properties.title}</td>
-                <td>${(b as any).guest.full_name}</td>
+                <td>${(b as any).properties?.title || 'غير متوفر'}</td>
+                <td>${(b as any).guest?.full_name || 'حجز يدوي'}</td>
                 <td>${b.booking_date}</td>
-                <td>${b.total_amount.toLocaleString()} ${b.currency}</td>
+                <td>${b.total_amount?.toLocaleString() || 'N/A'} ${b.currency || ''}</td>
                 <td>${b.status}</td>
             </tr>
         `).join('');
@@ -423,64 +432,63 @@ export default function AdminDashboardPage() {
                 <div class="stat-card"><h3>الحجوزات النشطة</h3><p>${stats.activeBookings}</p></div>
             </div>
             
-            <h2>قائمة المستخدمين (${users.length})</h2>
+            <h2>قائمة المستخدمين (${(users || []).length})</h2>
             <table>
                 <thead><tr><th>ID</th><th>الاسم</th><th>البريد الإلكتروني</th><th>رقم الهاتف</th><th>الدور</th></tr></thead>
                 <tbody>${usersHtml}</tbody>
             </table>
             
-            <h2>قائمة العقارات (${properties.length})</h2>
+            <h2>قائمة العقارات (${(properties || []).length})</h2>
             <table>
                 <thead><tr><th>ID</th><th>الاسم</th><th>الموقع</th><th>المضيف</th><th>السعر/الليلة</th><th>التقييم</th><th>الحالة</th></tr></thead>
                 <tbody>${propertiesHtml}</tbody>
             </table>
 
-            <h2>قائمة الحجوزات (${bookings.length})</h2>
+            <h2>قائمة الحجوزات (${(bookings || []).length})</h2>
             <table>
                 <thead><tr><th>ID</th><th>العقار</th><th>الضيف</th><th>التاريخ</th><th>المبلغ</th><th>الحالة</th></tr></thead>
                 <tbody>${bookingsHtml}</tbody>
             </table>
 
-            <h2>قائمة التقييمات (${reviews.length})</h2>
+            <h2>قائمة التقييمات (${(reviews || []).length})</h2>
             <table>
                 <thead><tr><th>ID</th><th>العقار</th><th>الضيف</th><th>التقييم</th><th>التعليق</th></tr></thead>
                 <tbody>${reviewsHtml}</tbody>
             </table>
 
-            <h2>طلبات الإلغاء (${cancellationRequests.length})</h2>
+            <h2>طلبات الإلغاء (${(cancellationRequests || []).length})</h2>
             <table>
                 <thead><tr><th>ID</th><th>العقار</th><th>الضيف</th><th>تاريخ الطلب</th><th>الحالة</th></tr></thead>
                 <tbody>${cancellationsHtml}</tbody>
             </table>
 
-            <h2>طلبات تغيير الموعد (${rescheduleRequests.length})</h2>
+            <h2>طلبات تغيير الموعد (${(rescheduleRequests || []).length})</h2>
             <table>
                 <thead><tr><th>ID</th><th>العقار</th><th>الضيف</th><th>التاريخ الجديد</th><th>الفترة الجديدة</th><th>الحالة</th></tr></thead>
                 <tbody>${reschedulesHtml}</tbody>
             </table>
             
-            <h2>الحسابات البنكية (${bankAccounts.length})</h2>
+            <h2>الحسابات البنكية (${(bankAccounts || []).length})</h2>
             <table>
                 <thead><tr><th>ID</th><th>البنك</th><th>صاحب الحساب</th><th>رقم الحساب</th><th>معرف المضيف</th></tr></thead>
                 <tbody>${bankAccountsHtml}</tbody>
             </table>
         `;
         const reportHtml = generateReportHTML('تقرير النظام الشامل', reportContent);
-        const reportWindow = window.open('', '_blank');
-        reportWindow?.document.write(reportHtml);
-        reportWindow?.document.close();
+        downloadReport(reportHtml, 'system-report.html');
+        toast({ title: "تم إنشاء تقرير النظام", description: "بدأ تنزيل الملف." });
     };
 
     return (
         <div className="container mx-auto px-4 py-8">
-             <div className="flex justify-between items-center mb-8">
+            <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold font-headline">لوحة تحكم المدير</h1>
                 <Button onClick={handleGenerateSystemReport} className="bg-primary hover:bg-primary/90">
                     <FileText className="ml-2 h-4 w-4" />
                     إنشاء تقرير للنظام
                 </Button>
             </div>
-            
+
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -523,8 +531,8 @@ export default function AdminDashboardPage() {
                     </CardContent>
                 </Card>
             </div>
-            
-             <Card>
+
+            <Card>
                 <CardHeader>
                     <CardTitle>إدارة مستخدمي النظام</CardTitle>
                     <CardDescription>عرض وإدارة جميع المستخدمين والمضيفين في المنصة.</CardDescription>
@@ -597,4 +605,4 @@ export default function AdminDashboardPage() {
     );
 }
 
-    
+

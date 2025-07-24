@@ -154,7 +154,8 @@ function BookingsList({ bookings, onUpdate }: { bookings: any[], onUpdate: () =>
                 : `مرحباً ${booking.guest.full_name}, نأسف لإبلاغكم بأنه تم رفض طلب حجزكم للعقار "${booking.properties.title}" لتاريخ ${booking.booking_date}.`;
 
             const whatsappUrl = `https://wa.me/${booking.guest.phone}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
+            window.location.href = whatsappUrl;  // تفتح واتساب أو صفحة الويب على أي جهاز
+
 
 
             // Create notification
@@ -902,9 +903,9 @@ function CancellationRequestsList({ requests, onUpdate }: { requests: Cancellati
             const message = action === 'accepted'
                 ? `مرحباً ${request.guest.full_name}, تم قبول طلبكم لإلغاء حجزكم للعقار "${request.properties?.title}". سيتم التواصل معكم لترتيب إعادة المبلغ.`
                 : `مرحباً ${request.guest.full_name}, نأسف لإبلاغكم بأنه تم رفض طلبكم لإلغاء حجزكم للعقار "${request.properties?.title}" وذلك لمخالفته سياسة الإلغاء.`;
-
             const whatsappUrl = `https://wa.me/${request.guest.phone}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
+            window.location.href = whatsappUrl;
+
 
 
             await createNotification({
@@ -987,8 +988,9 @@ function CancellationRequestsList({ requests, onUpdate }: { requests: Cancellati
         </Card>
     );
 }
-
 function HostComprehensiveReport({ user, data }: { user: UserDetails, data: any }) {
+    const { toast } = useToast();
+
     const generateReportHTML = () => {
         const { properties, bookings, reviews, bankAccounts } = data;
 
@@ -1015,7 +1017,7 @@ function HostComprehensiveReport({ user, data }: { user: UserDetails, data: any 
             <tr>
                 <td>${b.id}</td>
                 <td>${b.properties.title}</td>
-                <td>${b.guest.full_name}</td>
+            <td>${b.guest?.full_name || (b.guest_details as any)?.name || 'حجز يدوي'}</td>
                 <td>${b.booking_date}</td>
                 <td>${(b.total_amount || 0).toLocaleString()} ${b.currency}</td>
                 <td>${bookingStatusTranslations[b.status as BookingStatus]}</td>
@@ -1068,19 +1070,23 @@ function HostComprehensiveReport({ user, data }: { user: UserDetails, data: any 
         `;
 
         return `
-            <html>
+            <!DOCTYPE html>
+            <html lang="ar" dir="rtl">
                 <head>
                     <title>الكشف الشامل للمضيف: ${user.full_name}</title>
                     <meta charset="UTF-8">
+                     <link rel="preconnect" href="https://fonts.googleapis.com">
+                     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
                      <style>
-                        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
                         body { 
                             font-family: 'Tajawal', sans-serif; 
-                            direction: rtl;
                             margin: 0;
                             padding: 0;
                             background-color: #f4f4f4;
                             color: #333;
+                            -webkit-print-color-adjust: exact; 
+                            print-color-adjust: exact;
                         }
                         .page {
                             width: 210mm;
@@ -1094,7 +1100,7 @@ function HostComprehensiveReport({ user, data }: { user: UserDetails, data: any 
                            display: flex;
                            justify-content: space-between;
                            align-items: center;
-                           border-bottom: 2px solid hsl(210, 100%, 50%);
+                           border-bottom: 2px solid #3b82f6;
                            padding-bottom: 10px;
                         }
                         .header .logo-container {
@@ -1105,26 +1111,31 @@ function HostComprehensiveReport({ user, data }: { user: UserDetails, data: any 
                         .header .logo-container .logo-text {
                            font-size: 28px;
                            font-weight: bold;
-                           color: hsl(210, 100%, 50%);
+                           color: #3b82f6;
                         }
                         .header .logo-container .logo-icon {
                             width: 32px;
                             height: 32px;
-                            color: hsl(210, 100%, 50%);
+                            color: #3b82f6;
+                            fill: none;
+                            stroke: currentColor;
+                            stroke-width: 2;
+                            stroke-linecap: round;
+                            stroke-linejoin: round;
                         }
                         .header .report-title h1 {
-                           margin: 0; font-size: 22px;
+                           margin: 0; font-size: 22px; text-align: left;
                         }
                         .header .report-title p {
-                           margin: 0; font-size: 12px; color: #666;
+                           margin: 0; font-size: 12px; color: #666; text-align: left;
                         }
                         h2 {
                             font-size: 20px;
-                            border-bottom: 2px solid hsl(210, 100%, 50%);
+                            border-bottom: 2px solid #3b82f6;
                             padding-bottom: 8px;
                             margin-top: 25px;
                             margin-bottom: 15px;
-                            color: hsl(210, 100%, 50%);
+                            color: #3b82f6;
                         }
                         table {
                             width: 100%;
@@ -1145,17 +1156,10 @@ function HostComprehensiveReport({ user, data }: { user: UserDetails, data: any 
                             background-color: #f9f9f9;
                         }
                         @media print {
-                           html, body {
-                                width: 210mm;
-                                height: 297mm;
-                                -webkit-print-color-adjust: exact; 
-                                print-color-adjust: exact;
-                           }
                            .page {
                                 margin: 0;
                                 box-shadow: none;
                            }
-                           button { display: none; }
                         }
                     </style>
                 </head>
@@ -1163,7 +1167,7 @@ function HostComprehensiveReport({ user, data }: { user: UserDetails, data: any 
                     <div class="page">
                          <div class="header">
                             <div class="logo-container">
-                                <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>
+                                <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/></svg>
                                 <div class="logo-text">شاليها</div>
                             </div>
                             <div class="report-title">
@@ -1173,17 +1177,27 @@ function HostComprehensiveReport({ user, data }: { user: UserDetails, data: any 
                         </div>
                         ${reportContent}
                     </div>
-                    <script> window.onload = () => setTimeout(() => window.print(), 500); </script>
                 </body>
             </html>
         `;
     };
 
+    const downloadReport = (htmlContent: string, filename: string) => {
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
     const handlePrint = () => {
         const reportHtml = generateReportHTML();
-        const reportWindow = window.open('', '_blank');
-        reportWindow?.document.write(reportHtml);
-        reportWindow?.document.close();
+        downloadReport(reportHtml, `comprehensive-report-${user.id}.html`);
+        toast({ title: "تم إنشاء التقرير", description: "بدأ تنزيل الملف." });
     };
 
     return (
@@ -1193,7 +1207,6 @@ function HostComprehensiveReport({ user, data }: { user: UserDetails, data: any 
         </Button>
     );
 }
-
 
 export default function HostDashboardPage() {
     const { user, loading } = useAuth();
