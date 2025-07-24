@@ -7,7 +7,7 @@ import { PropertyCard } from "@/components/property-card";
 import { Search, SlidersHorizontal, Home as HomeIcon, CalendarCheck, Wallet, Sun, PartyPopper, ArrowLeft, ArrowRight, Building2, Tent, Waves as WavesIcon } from "lucide-react";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Filters } from "@/app/search/page";
+import { Filters } from "@/app/search/search-client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
 import { useState, useEffect } from "react";

@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -1224,7 +1223,7 @@ export default function HostDashboardPage() {
 
     useEffect(() => {
         if (!loading) {
-            if (user && user.role === 'host') {
+            if (user && (user.role === 'admin' || user.role === 'host')) {
                 fetchDashboardData(user.id);
             } else {
                 router.push('/login');
