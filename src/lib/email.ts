@@ -14,15 +14,17 @@ interface PasswordResetEmailPayload {
 }
 
 // You also need to add these variables to your .env file.
+const port = parseInt(process.env.EMAIL_SERVER_PORT || '587', 10);
 const smtpConfig = {
   host: process.env.EMAIL_SERVER_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.EMAIL_SERVER_PORT || '587', 10),
-  secure: (process.env.EMAIL_SERVER_PORT || '587') === '465', // true for 465, false for other ports
+  port,
+  secure: port === 465, // ✅ هذا هو المهم
   auth: {
     user: process.env.EMAIL_SERVER_USER,
     pass: process.env.EMAIL_SERVER_PASSWORD,
   },
 };
+
 
 const transporter = nodemailer.createTransport(smtpConfig);
 
